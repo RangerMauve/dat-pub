@@ -62,7 +62,7 @@ function createServer(archive) {
         }
 
         if (proofData.applications.indexOf(application) === -1) {
-          throw new Error(`Missing application in proof list`)
+          throw new Error(`Missing application (${application}) in proof list`)
         }
 
         const recordLocation = `/${application}/${newURL.slice(6)}.json`

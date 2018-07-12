@@ -53,7 +53,9 @@ function createServer(archive) {
 
       const proofLocation = `/.well-known/dat-pubs/${archive.url.slice(6)}.json`
       try {
-        const proofData = JSON.parse(await newArchive.readFile(proofLocation))
+        const file = await newArchive.readFile(proofLocation)
+
+        const proofData = JSON.parse(file)
 
         if (!proofData || !Array.isArray(proofData.applications)) {
           throw new Error('Invalid format for proof file')
@@ -77,7 +79,9 @@ function createServer(archive) {
         }
       } catch (e) {
         const err = new Error(
-          `Could not find a valid proof at '${newURL}${proofLocation}'`
+          `${
+            e.message
+          }. Could not find a valid proof at '${newURL}${proofLocation}'`
         )
         err.statusCode = 403
         throw err

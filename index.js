@@ -1,5 +1,6 @@
 const DatArchive = require('node-dat-archive')
 const fastify = require('fastify')({ logger: true })
+const mkdirp = require('dat-mkdirp')
 
 const IS_DAT = /^dat:\/\/.+/
 
@@ -47,6 +48,8 @@ function createServer(archive) {
 
       if (!IS_DAT.exec(newURL)) throw new Error('Invalid url')
 
+      if (!IS_DAT.exec(application)) throw new Error('Invalid application url')
+
       const newArchive = new DatArchive(newURL, {
         datOptions: { latest: true }
       })
@@ -54,7 +57,6 @@ function createServer(archive) {
       const proofLocation = `/.well-known/dat-pubs/${archive.url.slice(6)}.json`
       try {
         const file = await newArchive.readFile(proofLocation)
-
         const proofData = JSON.parse(file)
 
         if (!proofData || !Array.isArray(proofData.applications)) {
@@ -65,12 +67,17 @@ function createServer(archive) {
           throw new Error(`Missing application (${application}) in proof list`)
         }
 
-        const recordLocation = `/${application}/${newURL.slice(6)}.json`
-        const alreadyExists = await archive.readFile(recordLocation)
+        const recordLocation = `/${application.slice(6)}/${newURL.slice(
+          6
+        )}.json`
+
+        const alreadyExists = await fileExists(recordLocation)
 
         if (alreadyExists) throw new Error('Already registered')
 
         const recordData = JSON.stringify(request.body.details || {})
+        ew
+        await mkdirp(`/${application.slice(6)}`, archive)
 
         await archive.writeFile(recordLocation, recordData)
 
@@ -90,6 +97,17 @@ function createServer(archive) {
   )
 
   return fastify
+}
+
+async function fileExists(location) {
+  try {
+    await archive.readFile(location)
+    return true
+  } catch (error) {
+    return false
+  }
+
+  return false
 }
 
 module.exports = {

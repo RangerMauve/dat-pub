@@ -4,6 +4,7 @@
   "description": "Lightweight HTTP service for discovering dats",
   "main": "index.js",
   "scripts": {
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -28,11 +29,17 @@
     "node-dat-archive": "^2.0.1"
   },
   "devDependencies": {
-    "eslint": "^4.19.1",
+    "eslint": "^5.1.0",
+    "eslint-config-prettier": "^2.9.0",
     "eslint-config-standard": "^11.0.0",
     "eslint-plugin-import": "^2.11.0",
     "eslint-plugin-node": "^6.0.1",
     "eslint-plugin-promise": "^3.7.0",
-    "eslint-plugin-standard": "^3.1.0"
+    "eslint-plugin-standard": "^3.1.0",
+    "prettier": "^1.13.7"
+  },
+  "engines": {
+    "node": "8.11.3",
+    "npm": "5.7.1"
   }
 }

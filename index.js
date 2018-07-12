@@ -78,6 +78,8 @@ function createServer (archive) {
       throw err
     }
   })
+
+  return fastify
 }
 
 module.exports = {

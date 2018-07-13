@@ -1,11 +1,12 @@
 const DatArchive = require('node-dat-archive')
 const fastify = require('fastify')({ logger: true })
 const mkdirp = require('dat-mkdirp')
+const datPathExists = require('dat-path-exists')
 
 const IS_DAT = /^dat:\/\/.+/
 
 function createServer(archive) {
-  fastify.get('/', async (request, reply) => {
+  fastify.get('/', async () => {
     return {
       url: archive.url
     }
@@ -39,7 +40,7 @@ function createServer(archive) {
         }
       }
     },
-    async (request, reply) => {
+    async (request) => {
       const newURL = request.body.url
       const application = request.body.application
 
@@ -68,7 +69,7 @@ function createServer(archive) {
           6
         )}.json`
 
-        const alreadyExists = await fileExists(recordLocation)
+        const alreadyExists = await datPathExists(recordLocation, archive)
 
         if (alreadyExists) throw new Error('Already registered')
 
@@ -94,17 +95,6 @@ function createServer(archive) {
   )
 
   return fastify
-}
-
-async function fileExists(location) {
-  try {
-    await archive.readFile(location)
-    return true
-  } catch (error) {
-    return false
-  }
-
-  return false
 }
 
 module.exports = {

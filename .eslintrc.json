@@ -1,5 +1,5 @@
 {
-  "extends": ["prettier"],
+  "extends": ["prettier", "eslint:recommended"],
   "env": {
     "node": true
   },

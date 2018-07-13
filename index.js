@@ -24,9 +24,6 @@ function createServer(archive) {
             },
             application: {
               type: 'string'
-            },
-            details: {
-              type: 'object'
             }
           }
         },
@@ -75,8 +72,8 @@ function createServer(archive) {
 
         if (alreadyExists) throw new Error('Already registered')
 
-        const recordData = JSON.stringify(request.body.details || {})
-        ew
+        const recordData = JSON.stringify({})
+
         await mkdirp(`/${application.slice(6)}`, archive)
 
         await archive.writeFile(recordLocation, recordData)

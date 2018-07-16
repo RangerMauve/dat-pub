@@ -1,0 +1,23 @@
+{
+  "schema": {
+    "body": {
+      "type": "object",
+      "required": ["url"],
+      "properties": {
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "response": {
+      "200": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

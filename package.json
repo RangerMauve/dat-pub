@@ -28,8 +28,13 @@
   "dependencies": {
     "dat-mkdirp": "^1.0.0",
     "dat-path-exists": "^1.0.0",
+    "ejs": "^2.6.1",
     "fastify": "^1.3.1",
-    "node-dat-archive": "^2.0.1"
+    "fastify-static": "^0.12.0",
+    "mkdirp": "^0.5.1",
+    "node-dat-archive": "^2.0.1",
+    "parse-dat-url": "^3.0.1",
+    "sleep-promise": "^8.0.1"
   },
   "devDependencies": {
     "eslint": "^5.1.0",

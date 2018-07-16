@@ -1,0 +1,26 @@
+{
+  "schema": {
+    "body": {
+      "type": "object",
+      "required": ["private", "url"],
+      "properties": {
+        "private": {
+          "type": "boolean"
+        },
+        "url": {
+          "type": "string"
+        }
+      }
+    },
+    "response": {
+      "200": {
+        "type": "object",
+        "properties": {
+          "location": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

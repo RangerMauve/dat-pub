@@ -1,0 +1,173 @@
+<html>
+
+<head>
+  <title>Dat Pub</title>
+  <link rel="stylesheet" type="text/css" href="public/vendor/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="public/styles.css">
+  <script src="public/vendor/jquery-3.3.1.slim.min.js"></script>
+  <script src="public/vendor/bootstrap.min.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <img src="public/pub.svg" style="width: 100px; height: 100px; margin-top: 36px; margin-bottom: 24px;" />
+    <!-- pub icon by parkjisun from the Noun Project -->
+
+    <h1 class="sr-only">Dat Pub</h1>
+
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="api-tab" data-toggle="tab" href="#api" role="tab" aria-controls="home" aria-selected="true">API</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="forms-tab" data-toggle="tab" href="#forms" role="tab" aria-controls="profile" aria-selected="false">Forms</a>
+      </li>
+    </ul>
+
+    <div class="tab-content">
+      <div class="tab-pane fade show active" id="api" role="tabpanel" aria-labelledby="api-tab">
+        <section>
+          <h3>
+            <span class="badge badge-success">GET</span> /applications
+          </h3>
+        </section>
+
+        <section>
+          <h3>
+            <span class="badge badge-primary">POST</span> /applications
+          </h3>
+        </section>
+
+        <section>
+          <h3>
+            <span class="badge badge-success">GET</span> /applications/{dat-key}</h3>
+        </section>
+
+        <section>
+          <h3>
+            <span class="badge badge-primary">POST</span> /known-archives
+          </h3>
+        </section>
+
+        <section>
+          <a href="https://github.com/RangerMauve/dat-pub/schemas">Schemas</a>
+        </section>
+      </div>
+      <div class="tab-pane fade" id="forms" role="tabpanel" aria-labelledby="forms-tab">
+        <section>
+          <h3>
+            <span class="badge badge-primary">POST</span> /applications
+          </h3>
+
+          <form id="post-application-form">
+            <div class="form-group">
+              <label for="url1">URL</label>
+              <input type="url" class="form-control" id="url1" required placeholder="dat://" />
+            </div>
+            <div class="form-group form-check" style="display: none">
+              <input type="checkbox" value="true" class="form-check-input" id="private" />
+              <label class="form-check-label" for="private">Private</label>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+
+          <div class="response" id="post-application-response" style="display: none;">
+            <h5>Response</h5>
+            <div>
+              <span class="badge badge-pill"></span>
+            </div>
+            <pre><code></code></pre>
+          </div>
+
+          <script>
+            document.querySelector('#post-application-form').addEventListener('submit', (event) => {
+              event.preventDefault()
+
+              const data = {
+                url: document.querySelector('#url1').value,
+                private: document.querySelector('#private').checked
+              };
+
+              const codeDiv = document.querySelector('#post-application-response')
+
+              fetch('/applications', {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: { "Content-Type": "application/json" },
+              }).then((response) => ({ response, data: response.json() })).then(({ response, data }) => {
+                codeDiv.querySelector('.badge').textContent = `${response.status} ${response.statusText}`
+                codeDiv.querySelector('.badge').classList.remove('badge-success', 'badge-danger')
+                codeDiv.querySelector('.badge').classList.add(response.ok ? 'badge-success' : 'badge-danger')
+                codeDiv.querySelector('code').textContent = JSON.stringify(data, null, 2)
+                codeDiv.style.display = 'block'
+              }).catch((error) => {
+                codeDiv.querySelector('code').textContent = JSON.stringify('error', null, 2)
+                codeDiv.style.display = 'block'
+              });
+            })
+          </script>
+        </section>
+
+        <section>
+          <h3>
+            <span class="badge badge-primary">POST</span> /known-archives
+          </h3>
+
+          <form id="post-known-archive-form">
+            <div class="form-group">
+              <label for="application1">Application</label>
+              <input required type="url" class="form-control" id="application1" placeholder="dat://" />
+            </div>
+            <div class="form-group">
+              <label for="knownarchive1">Known archive</label>
+              <input type="url" class="form-control" id="knownarchive1" placeholder="dat://" required />
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+
+          <div class="response" id="post-known-archive-response" style="display: none;">
+            <h5>Response</h5>
+            <div>
+              <span class="badge badge-pill"></span>
+            </div>
+            <pre><code></code></pre>
+          </div>
+
+          <script>
+            document.querySelector('#post-known-archive-form').addEventListener('submit', (event) => {
+              event.preventDefault()
+
+              const data = {
+                application: document.querySelector('#application1').value,
+                knownArchive: document.querySelector('#knownarchive1').value
+              };
+
+              const codeDiv = document.querySelector('#post-known-archive-response')
+
+              fetch('/known-archives', {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: { "Content-Type": "application/json" },
+              }).then((response) => ({ response, data: response.json() })).then(({ response, data }) => {
+                codeDiv.querySelector('.badge').textContent = `${response.status} ${response.statusText}`
+                codeDiv.querySelector('.badge').classList.remove('badge-success', 'badge-danger')
+                codeDiv.querySelector('.badge').classList.add(response.ok ? 'badge-success' : 'badge-danger')
+                codeDiv.querySelector('code').textContent = JSON.stringify(data, null, 2)
+                codeDiv.style.display = 'block'
+              }).catch((error) => {
+                codeDiv.querySelector('code').textContent = JSON.stringify('error', null, 2)
+                codeDiv.style.display = 'block'
+              });
+            })
+          </script>
+        </section>
+      </div>
+    </div>
+
+    <script src="public/vendor/github-corner.js"></script>
+    <github-corner>
+      <a href="https://github.com/RangerMauve/dat-pub">GitHub</a>
+    </github-corner>
+</body>
+
+</html>

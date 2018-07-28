@@ -1,0 +1,25 @@
+{
+  "schema": {
+    "response": {
+      "200": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "application": {
+                  "type": "string"
+                },
+                "pubArchive": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

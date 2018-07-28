@@ -1,0 +1,22 @@
+{
+  "schema": {
+    "body": {
+      "type": "object",
+      "required": ["application", "knownArchive"],
+      "properties": {
+        "application": {
+          "type": "string"
+        },
+        "knownArchive": {
+          "type": "string"
+        }
+      }
+    },
+    "response": {
+      "200": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  }
+}

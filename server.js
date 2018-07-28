@@ -1,32 +1,50 @@
-const DatArchive = require('node-dat-archive')
-const fs = require('fs')
-const { createServer } = require('./index')
+const path = require('path')
+const fastify = require('fastify')({ logger: true })
 
-const DAT_PATH = './pub-archive'
+// routes
+const getApplicationPubs = require('./routes/applications/get-applications')
+const getApplication = require('./routes/applications/get-application')
+const postApplication = require('./routes/applications/post-application')
+const postApplicationKnownArchive = require('./routes/known-archives/post-known-archive')
 
-async function main() {
-  const archive = fs.existsSync(DAT_PATH)
-    ? await DatArchive.load({
-        localPath: DAT_PATH
-      })
-    : await DatArchive.create({
-        localPath: DAT_PATH,
-        title: 'dat-pub',
-        description: 'Service for discovering dats'
-      })
+// schemas
+const getApplicationSchema = require('./schemas/applications/get-application.json')
+const getApplicationsSchema = require('./schemas/applications/get-applications.json')
+const postApplicationSchema = require('./schemas/applications/post-application.json')
+const postApplicationKnownArchiveSchema = require('./schemas/known-archives/post-known-archive.json')
 
-  if (archive == null) {
-    throw new Error('error when creating or loading archive')
-  }
+// utils
+const { loadAllArchives } = require('./applications')
 
-  const fastify = createServer(archive)
+async function createServer() {
+  fastify.register(require('fastify-static'), {
+    root: path.join(__dirname, 'public'),
+    prefix: '/public/'
+  })
 
-  try {
-    await fastify.listen(process.env.PORT || 3000, '0.0.0.0')
-  } catch (err) {
-    fastify.log.error(err)
-    process.exit(1)
-  }
+  fastify.get('/', (req, reply) => {
+    reply.sendFile('index.html')
+  })
+
+  await loadAllArchives()
+
+  fastify.get('/applications', getApplicationsSchema, getApplicationPubs)
+  fastify.post('/applications', postApplicationSchema, postApplication)
+  fastify.get(
+    '/applications/:application',
+    getApplicationSchema,
+    getApplication
+  )
+
+  fastify.post(
+    '/known-archives',
+    postApplicationKnownArchiveSchema,
+    postApplicationKnownArchive
+  )
+
+  return fastify
 }
 
-main()
+module.exports = {
+  createServer
+}

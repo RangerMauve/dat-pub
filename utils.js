@@ -1,38 +1,32 @@
 const DatArchive = require('node-dat-archive')
 
-exports.checkUserArchiveForApprovalOfPub = async function(
-  applicationPub,
+exports.checkArchiveForApprovalOfPub = async function(
   applicationKey,
-  userUrl
+  knownArchiveKey
 ) {
-  const userArchive = new DatArchive(userUrl, {
+  const knownArchive = new DatArchive(`dat://${knownArchiveKey}`, {
     datOptions: { latest: true }
   })
 
-  const proofLocation = `/.well-known/dat-pubs/${applicationPub.url.slice(
-    6
-  )}.json`
+  const proofLocation = `/.dat-pub/${applicationKey}.json`
 
   let file
+
   try {
-    file = await userArchive.readFile(proofLocation)
+    file = await knownArchive.readFile(proofLocation)
   } catch (err) {
-    throw new Error(
-      `Proof file missing: /.well-known/dat-pubs/${applicationPub.url.slice(
-        6
-      )}.json`
-    )
+    throw new Error(`Proof file missing: ${proofLocation}`)
   }
 
   const proofData = JSON.parse(file)
 
-  if (!proofData || !Array.isArray(proofData.applications)) {
+  if (proofData == null || typeof proofData !== 'object') {
     throw new Error('Invalid format for proof file')
   }
 
-  if (proofData.applications.indexOf(`dat://${applicationKey}`) === -1) {
-    throw new Error(
-      `Missing application (dat://${applicationKey}) in proof list`
-    )
+  if (proofData.private) {
+    throw new Error('Private applications not yet supported')
   }
+
+  knownArchive._close()
 }

@@ -1,0 +1,14 @@
+{
+  "schema": {
+    "response": {
+      "200": {
+        "type": "object",
+        "properties": {
+          "pubArchive": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

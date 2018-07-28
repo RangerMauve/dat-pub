@@ -2,9 +2,12 @@
   "schema": {
     "body": {
       "type": "object",
-      "required": ["url"],
+      "required": ["application", "knownArchive"],
       "properties": {
-        "url": {
+        "application": {
+          "type": "string"
+        },
+        "knownArchive": {
           "type": "string"
         }
       }
@@ -12,11 +15,7 @@
     "response": {
       "200": {
         "type": "object",
-        "properties": {
-          "location": {
-            "type": "string"
-          }
-        }
+        "properties": {}
       }
     }
   }

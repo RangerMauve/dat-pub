@@ -2,7 +2,6 @@ const DatArchive = require('node-dat-archive')
 const { lstatSync, readdirSync } = require('fs')
 const { join, basename } = require('path')
 const mkdirp = require('mkdirp')
-const sleep = require('sleep-promise')
 
 const APPLICATIONS_DIR = join(__dirname, 'applications')
 
@@ -22,17 +21,25 @@ const archives = new Map()
 exports.getApplicationPubs = () => archives
 
 exports.createApplicationPub = async applicationKey => {
-  mkdirp.sync(join(APPLICATIONS_DIR, applicationKey, 'pub'))
+  if (archives.has(applicationKey)) {
+    return archives.get(applicationKey)
+  }
+
+  const localPath = join(APPLICATIONS_DIR, applicationKey, 'pub')
+
+  mkdirp.sync(localPath)
 
   const archive = await DatArchive.create({
-    localPath: join(APPLICATIONS_DIR, applicationKey, 'pub'),
-    title: `Users of dat://${applicationKey}`,
-    description: 'User pub for application',
+    localPath,
+    title: `Known archives for application: dat://${applicationKey}`,
+    description: 'Pub archive for application',
     datOptions: { latest: true }
   })
 
-  // if I load prematurely, it doesn't work
-  sleep(3000).then(loadAllArchives)
+  // wait for archive to be ready for use
+  await archive._loadPromise
+
+  await loadAllArchives()
 
   return archive
 }

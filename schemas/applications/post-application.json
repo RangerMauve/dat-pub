@@ -16,7 +16,7 @@
       "200": {
         "type": "object",
         "properties": {
-          "location": {
+          "pubArchive": {
             "type": "string"
           }
         }
